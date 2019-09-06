@@ -102,8 +102,10 @@ function Addon:OnInitialize()
 	
 	WorldMapFrame:HookScript("OnShow", function() Addon:UpdateVisiblity() end);
 	WorldMapFrame:HookScript("OnHide", function() Addon:UpdateVisiblity() end);
-	hooksecurefunc(WorldMapFrame, "Minimize", function() Addon:UpdateVisiblity() end);
-	hooksecurefunc(WorldMapFrame, "Maximize", function() Addon:UpdateVisiblity() end);
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		hooksecurefunc(WorldMapFrame, "Minimize", function() Addon:UpdateVisiblity() end);
+		hooksecurefunc(WorldMapFrame, "Maximize", function() Addon:UpdateVisiblity() end);
+	end
 end
 
 function ExperiencerSplitsAlertCloseButton_OnClick(self)
@@ -121,8 +123,10 @@ function Addon:OnEnable()
 	end
 	
 	Addon:RegisterEvent("PLAYER_REGEN_DISABLED");
-	Addon:RegisterEvent("PET_BATTLE_OPENING_START");
-	Addon:RegisterEvent("PET_BATTLE_CLOSE");
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		Addon:RegisterEvent("PET_BATTLE_OPENING_START");
+		Addon:RegisterEvent("PET_BATTLE_CLOSE");
+	end
 	
 	Addon:InitializeModules();
 	
