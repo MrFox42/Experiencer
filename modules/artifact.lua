@@ -22,12 +22,16 @@ module.levelUpRequiresAction = true;
 module.hasCustomMouseCallback = false;
 
 function module:Initialize()
+	if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE) then
+		return;
+	end
+	
 	self:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED");
 	module.apInSession = 0;
 end
 
 function module:IsDisabled()
-	return not C_AzeriteItem.HasActiveAzeriteItem()
+	return _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE or not C_AzeriteItem.HasActiveAzeriteItem()
 end
 
 function module:AllowedToBufferUpdate()

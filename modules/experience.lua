@@ -99,7 +99,11 @@ function module:Initialize()
 end
 
 function module:IsDisabled()
-	return module:IsPlayerMaxLevel() or IsXPUserDisabled();
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		return module:IsPlayerMaxLevel() or IsXPUserDisabled();
+	end
+	
+	return module:IsPlayerMaxLevel();
 end
 
 function module:AllowedToBufferUpdate()

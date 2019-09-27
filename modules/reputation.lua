@@ -105,11 +105,6 @@ function module:OnMouseWheel(delta)
 end
 
 function module:CanLevelUp()
-	local _, _, _, _, _, factionID = GetWatchedFactionInfo();
-	if(factionID and C_Reputation.IsFactionParagon(factionID)) then
-		local _, _, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
-		return hasRewardPending;
-	end
 	return false;
 end
 
@@ -124,7 +119,10 @@ function module:GetText()
 	local rep_text = {};
 	
 	local name, standing, minReputation, maxReputation, currentReputation, factionID = GetWatchedFactionInfo();
-	local friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	local friendLevel, friendThreshold, nextFriendThreshold;
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	end
 	
 	local standingText = "";
 	local isCapped = false;
@@ -143,18 +141,20 @@ function module:GetText()
 		end
 	end
 	
-	if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
-		currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
-		isCapped = false;
-		minReputation = 0;
-		
-		paragonLevel = math.floor(currentReputation / maxReputation);
-		currentReputation = currentReputation % maxReputation;
-		
-		if(paragonLevel == 1) then
-			standingText = module:GetStandingColorText(standing+1);
-		elseif(paragonLevel > 1) then
-			standingText = string.format("%dx %s", paragonLevel, module:GetStandingColorText(standing+1));
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
+			currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
+			isCapped = false;
+			minReputation = 0;
+			
+			paragonLevel = math.floor(currentReputation / maxReputation);
+			currentReputation = currentReputation % maxReputation;
+			
+			if(paragonLevel == 1) then
+				standingText = module:GetStandingColorText(standing+1);
+			elseif(paragonLevel > 1) then
+				standingText = string.format("%dx %s", paragonLevel, module:GetStandingColorText(standing+1));
+			end
 		end
 	end
 	
@@ -200,7 +200,10 @@ end
 
 function module:GetChatMessage()
 	local name, standing, minReputation, maxReputation, currentReputation, factionID = GetWatchedFactionInfo();
-	local friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	local friendLevel, friendThreshold, nextFriendThreshold;
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	end
 	
 	local standingText = "";
 	local isCapped = false;
@@ -219,13 +222,15 @@ function module:GetChatMessage()
 		end
 	end
 	
-	if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
-		currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
-		isCapped = false;
-		minReputation = 0;
-		
-		paragonLevel = math.floor(currentReputation / maxReputation);
-		currentReputation = currentReputation % maxReputation;
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
+			currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
+			isCapped = false;
+			minReputation = 0;
+			
+			paragonLevel = math.floor(currentReputation / maxReputation);
+			currentReputation = currentReputation % maxReputation;
+		end
 	end
 	
 	if(not isCapped) then
@@ -268,7 +273,10 @@ function module:GetBarData()
 		local name, standing, minReputation, maxReputation, currentReputation, factionID = GetWatchedFactionInfo();
 		data.id = factionID;
 		
-		local friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+		local friendLevel, friendThreshold, nextFriendThreshold;
+		if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+			friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+		end
 		
 		local standingText = "";
 		local isCapped = false;
@@ -281,13 +289,15 @@ function module:GetBarData()
 			isCapped = true;
 		end
 		
-		if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
-			currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
-			isCapped = false;
-			minReputation = 0;
-			
-			paragonLevel = math.floor(currentReputation / maxReputation);
-			currentReputation = currentReputation % maxReputation;
+		if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+			if(isCapped and C_Reputation.IsFactionParagon(factionID)) then
+				currentReputation, maxReputation, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
+				isCapped = false;
+				minReputation = 0;
+				
+				paragonLevel = math.floor(currentReputation / maxReputation);
+				currentReputation = currentReputation % maxReputation;
+			end
 		end
 		
 		data.level    = standing;
@@ -433,7 +443,10 @@ function module:GetRecentReputationsMenu()
 		
 		local factionIndex = module:GetReputationID(name);
 		local _, _, standing, _, _, _, _, _, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID = GetFactionInfo(factionIndex);
-		local friend_level = select(7, GetFriendshipReputation(factionID));
+		local friend_level;
+		if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+			friend_level = select(7, GetFriendshipReputation(factionID));
+		end
 		local standing_text = "";
 		
 		if(not isHeader or hasRep) then
@@ -469,13 +482,16 @@ function module:GetReputationProgressByFactionID(factionID)
 	local isCapped = false;
 	local isParagon = false;
 	
-	local friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	local friendLevel, friendThreshold, nextFriendThreshold;
+	if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+		friendLevel, friendThreshold, nextFriendThreshold = select(7, GetFriendshipReputation(factionID));
+	end
 	if(friendLevel) then
 		if(not nextFriendThreshold) then
 			isCapped = true;
 		end
 	else
-		if(standing == MAX_REPUTATION_REACTION) then
+		if(standing == MAX_REPUTATION_REACTION and _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
 			if(C_Reputation.IsFactionParagon(factionID)) then
 				currentReputation, maxReputation = C_Reputation.GetFactionParagonInfo(factionID);
 				minReputation = 0;
@@ -517,7 +533,10 @@ function module:GetReputationsMenu()
 				end
 			end
 				
-			local friendLevel = select(7, GetFriendshipReputation(factionID));
+			local friendLevel;
+			if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
+				friendLevel = select(7, GetFriendshipReputation(factionID));
+			end
 			local standingText = "";
 			
 			if(not isHeader or hasRep) then
@@ -644,7 +663,7 @@ end
 
 function module:UPDATE_FACTION(event, ...)
 	local name, _, _, _, _, factionID = GetWatchedFactionInfo();
-	module.levelUpRequiresAction = (factionID and C_Reputation.IsFactionParagon(factionID));
+	module.levelUpRequiresAction = (factionID and _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE and C_Reputation.IsFactionParagon(factionID));
 	
 	local instant = false;
 	if(name ~= module.Tracked or not name) then

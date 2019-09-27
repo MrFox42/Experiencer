@@ -24,12 +24,16 @@ module.hasCustomMouseCallback = false;
 local HONOR_UNLOCK_LEVEL = 110;
 
 function module:Initialize()
+	if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE) then
+		return;
+	end
+
 	self:RegisterEvent("HONOR_XP_UPDATE");
 	self:RegisterEvent("HONOR_LEVEL_UPDATE");
 end
 
 function module:IsDisabled()
-	return UnitLevel("player") < HONOR_UNLOCK_LEVEL;
+	return _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE or UnitLevel("player") < HONOR_UNLOCK_LEVEL;
 end
 
 function module:AllowedToBufferUpdate()

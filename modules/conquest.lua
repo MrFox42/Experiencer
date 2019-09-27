@@ -23,12 +23,16 @@ module.hasCustomMouseCallback = false;
 local CONQUEST_UNLOCK_LEVEL = 120;
 
 function module:Initialize()
+	if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE) then
+		return;
+	end
+	
 	self:RegisterEvent("QUEST_LOG_UPDATE");
 	self:RegisterEvent("PVP_REWARDS_UPDATE");
 end
 
 function module:IsDisabled()
-	return UnitLevel("player") < CONQUEST_UNLOCK_LEVEL;
+	return _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE or UnitLevel("player") < CONQUEST_UNLOCK_LEVEL;
 end
 
 function module:AllowedToBufferUpdate()

@@ -20,10 +20,10 @@ libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
 core.lua
 modules\experience.lua
-#modules\reputation.lua
-#modules\artifact.lua
-#modules\honor.lua
-#modules\conquest.lua
+modules\reputation.lua
+modules\artifact.lua
+modules\honor.lua
+modules\conquest.lua
 events.lua
 databroker.lua
 Frame.xml
