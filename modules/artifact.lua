@@ -30,8 +30,29 @@ function module:Initialize()
 	module.apInSession = 0;
 end
 
+local HEART_OF_AZEROTH_ITEM_ID = 158075;
+local HEART_OF_AZEROTH_QUEST_ID = 51211;
+
 function module:IsDisabled()
-	return _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE or not C_AzeriteItem.HasActiveAzeriteItem()
+	if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE) then
+		return true;
+	end
+
+	local playerLevel = UnitLevel("player");
+	if (playerLevel < 110) then
+		return true;
+	end
+	
+	local hasArtifact = C_AzeriteItem.HasActiveAzeriteItem();
+	if (not hasArtifact) then
+		-- C_AzeriteItem.HasActiveAzeriteItem may return false
+		-- during initial game loading, try a fallback to item id
+		local itemId = GetInventoryItemID("player", 2);
+		if (itemId == HEART_OF_AZEROTH_ITEM_ID) then
+			hasArtifact = true;
+		end
+	end
+	return not hasArtifact;
 end
 
 function module:AllowedToBufferUpdate()
