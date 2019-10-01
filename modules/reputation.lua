@@ -105,6 +105,16 @@ function module:OnMouseWheel(delta)
 end
 
 function module:CanLevelUp()
+	if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE) then
+		return false;
+	end
+
+	local _, _, _, _, _, factionID = GetWatchedFactionInfo();
+	if(factionID and C_Reputation.IsFactionParagon(factionID)) then
+		local _, _, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
+		return hasRewardPending;
+	end
+
 	return false;
 end
 
